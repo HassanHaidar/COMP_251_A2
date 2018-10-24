@@ -29,8 +29,25 @@ class Assignment implements Comparator<Assignment>{
 	public int compare(Assignment a1, Assignment a2) {
 		//YOUR CODE GOES HERE, DONT FORGET TO EDIT THE RETURN STATEMENT
 		
-		
-		return 0;
+		// compare a1 and a2 according to their deadlines
+		if (a1.deadline == a2.deadline){
+			if (a1.weight == a2.weight){
+				return 0;
+			}
+			else if (a1.weight > a2.weight){
+				return 1;
+			}
+			else{
+				return -1;
+			}
+			
+		}
+		else if (a1.deadline > a2.deadline){
+			return 1;
+		}
+		else{
+			return -1;
+		}
 	}
 }
 
@@ -65,7 +82,24 @@ public class HW_Sched {
 		//Initializes the homeworkPlan, which you must fill out and output
 		int[] homeworkPlan = new int[Assignments.size()];
 		//YOUR CODE GOES HERE
-	
+		/*
+		 * Done in collaboration with Huzaifa Elahi
+		 */
+		// loop over all assignments
+		for (int i = 0; i < Assignments.size(); i++){
+			// from the way we order assignments, we know the last one should be included
+			Assignment currentAssignment = Assignments.get(i);
+			if (i == Assignments.size() - 1){
+				homeworkPlan[currentAssignment.number] = currentAssignment.deadline;
+			}
+			// if two consecutive assignments have different deadlines, then we know the first one should be included
+			else{
+				Assignment nextAssignment = Assignments.get(i + 1);
+				if (nextAssignment.deadline != currentAssignment.deadline){
+					homeworkPlan[currentAssignment.number] = currentAssignment.deadline;
+				}
+			}
+		}
 		
 		return homeworkPlan;
 	}
