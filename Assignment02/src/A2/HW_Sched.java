@@ -29,22 +29,36 @@ class Assignment implements Comparator<Assignment>{
 	public int compare(Assignment a1, Assignment a2) {
 		//YOUR CODE GOES HERE, DONT FORGET TO EDIT THE RETURN STATEMENT
 		
-		// compare a1 and a2 according to their deadlines
+		/*
+		 * compare assignments according to their deadlines
+		 * if two assignments have the same deadline, then order according to weight
+		 */
+		
+		
+		// if a1 and a2 have the same deadline, then compare weights
 		if (a1.deadline == a2.deadline){
+			
 			if (a1.weight == a2.weight){
 				return 0;
 			}
+			// a1 more important than a2, then a1 before a2
 			else if (a1.weight > a2.weight){
-				return 1;
-			}
-			else{
 				return -1;
 			}
 			
+			// a1 less important than a2, then a1 after a2
+			else{
+				return 1;
+			}
+			
 		}
+		
+		// a1 deadline later than a2, then a1 after a2
 		else if (a1.deadline > a2.deadline){
 			return 1;
 		}
+		
+		//a1 deadline before a2, then a1 before a2
 		else{
 			return -1;
 		}
@@ -83,20 +97,52 @@ public class HW_Sched {
 		int[] homeworkPlan = new int[Assignments.size()];
 		//YOUR CODE GOES HERE
 		/*
-		 * Done in collaboration with Huzaifa Elahi
+		 * Done in collaboration with Huzaifa Elahi 
 		 */
+		
+		// Starting from time = 0, define latestHomework as the time to do the latest homework
+		
+		int latestHomework = 0;
+		
+		
 		// loop over all assignments
 		for (int i = 0; i < Assignments.size(); i++){
-			// from the way we order assignments, we know the last one should be included
+			// from the way we order assignments, we know the first one should be included
 			Assignment currentAssignment = Assignments.get(i);
-			if (i == Assignments.size() - 1){
-				homeworkPlan[currentAssignment.number] = currentAssignment.deadline;
+			if (i == 0){
+				latestHomework++;
+				homeworkPlan[currentAssignment.number] = latestHomework;
 			}
-			// if two consecutive assignments have different deadlines, then we know the first one should be included
-			else{
+			
+			
+			// if current assignment is NOT the last one
+			else if (i < Assignments.size() - 1){
+				
+				// get next assignment
 				Assignment nextAssignment = Assignments.get(i + 1);
-				if (nextAssignment.deadline != currentAssignment.deadline){
-					homeworkPlan[currentAssignment.number] = currentAssignment.deadline;
+				
+				// if cur assignment and next assignment have the same deadline
+				if (currentAssignment.deadline == nextAssignment.deadline){
+					// if the deadline is not due for current assignment, then add current assignment
+					if (latestHomework < currentAssignment.deadline){
+						latestHomework++;
+						homeworkPlan[currentAssignment.number] = latestHomework;
+					}
+				}
+				
+				// if current assignment and next assignment have different deadlines, then we know from the way we order our assignments, we have to add the next one
+				else{
+					latestHomework++;
+					homeworkPlan[nextAssignment.number] = latestHomework;
+				}
+			}
+			
+			
+			// if current assignment is the last one, check if we are not past the deadline, then add
+			else{
+				if (latestHomework < currentAssignment.deadline){
+					latestHomework++;
+					homeworkPlan[currentAssignment.number] = latestHomework;
 				}
 			}
 		}
